@@ -1,0 +1,6 @@
+Customer3,147TL,cableTV
+Customer8,26TL,gas
+Customer6,120TL,cableTV
+Customer5,77TL,gas
+Customer1,46TL,electricity
+Customer7,181TL,electricity
