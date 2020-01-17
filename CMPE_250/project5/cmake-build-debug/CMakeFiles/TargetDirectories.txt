@@ -1,0 +1,3 @@
+/Users/sertayakpinar/CLionProjects/project5/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/sertayakpinar/CLionProjects/project5/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/sertayakpinar/CLionProjects/project5/cmake-build-debug/CMakeFiles/project5.dir
