@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Event.h
+Passenger.h
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Passenger.h
+
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Passenger.h
+iostream
+-
+
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Simulation.cpp
+Simulation.h
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Simulation.h
+iostream
+-
+vector
+-
+queue
+-
+
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Simulation.h
+Passenger.h
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Passenger.h
+vector
+-
+queue
+-
+Event.h
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/Event.h
+

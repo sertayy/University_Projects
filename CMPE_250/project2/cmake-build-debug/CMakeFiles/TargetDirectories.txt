@@ -1,0 +1,3 @@
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/sertayakpinar/CLionProjects/cmpe250-project2-sertayakpinar2016400075/cmake-build-debug/CMakeFiles/sertayakpinar2016400075.dir
