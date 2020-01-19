@@ -1,3 +1,6 @@
+/*
+ Implemented by Sertay Akpinar, 06.12.2019 ®
+ */
 #include <iostream>
 #include <unistd.h>
 #include <stdio.h>

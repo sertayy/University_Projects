@@ -1,5 +1,5 @@
 /*
- * Implemented by Sertay Akpinar, 02.01.2020
+ * Implemented by Sertay Akpinar, 02.01.2020 ®
  */
 
 #include <iostream>
