@@ -82,14 +82,14 @@ public class SnakesGameSimulator extends GridGame {
 						addFood(x, y); 
 					}  
 				} 
-//				else if(action.getType() == Action.Type.REPRODUCE) {
-//					// Creates a newSnake
-//					Snake newSnake = snake.reproduce();
-//					snakes.add(newSnake);
-//					updateNodesMap(snake);
-//					addDrawable(newSnake);
-//					updateNodesMap(newSnake);
-//				}
+				else if(action.getType() == Action.Type.REPRODUCE) {
+					// Creates a newSnake
+					Snake newSnake = snake.reproduce();
+					snakes.add(newSnake);
+					updateNodesMap(snake);
+					addDrawable(newSnake);
+					updateNodesMap(newSnake);
+				}
 			}
 		}
 		

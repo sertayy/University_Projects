@@ -62,9 +62,9 @@ public class Snake implements Drawable{
 		List<Direction> sensibleDirections = new ArrayList<Direction>();
  		List<Direction> freeDirections = information.getFreeDirections();
  		
-//		if (snakeParts.size()==8) {
-//			return new Action(Action.Type.REPRODUCE);
-//		}
+		if (snakeParts.size()==8) {
+			return new Action(Action.Type.REPRODUCE);
+		}
 			
 		if(((headX - foodX) == 1) && (headY == foodY)) {
 				return new Action(Type.EAT,Direction.LEFT);
@@ -126,14 +126,14 @@ public class Snake implements Drawable{
 	 * Removes the last 4 nodes of the parent snake
 	 * @return
 	 */
-//	public Snake reproduce() {
-//		Node head = snakeParts.removeLast();
-//		Node body1 = snakeParts.removeLast();
-//		Node body2 = snakeParts.removeLast();
-//		Node body3 = snakeParts.removeLast();
-//		Snake newSnake = new Snake(head, body1.getX(), body2.getX(), body3.getX(), body1.getY(), body2.getY(), body3.getY());
-//		return newSnake;
-//	}	
+	public Snake reproduce() {
+		Node head = snakeParts.removeLast();
+		Node body1 = snakeParts.removeLast();
+		Node body2 = snakeParts.removeLast();
+		Node body3 = snakeParts.removeLast();
+		Snake newSnake = new Snake(head, body1.getX(), body2.getX(), body3.getX(), body1.getY(), body2.getY(), body3.getY());
+		return newSnake;
+	}	
 	
 	/**
 	 * Draws snake

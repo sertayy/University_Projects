@@ -20,7 +20,7 @@ public class Main {
             try {
          // Create game
          // You can change the world width and height, size of each grid square in pixels or the game speed
-            	SnakesGameSimulator game = new SnakesGameSimulator(30, 30, 25, 10000);
+            	SnakesGameSimulator game = new SnakesGameSimulator(70, 40, 20, 70);
 
                 	int x = (int) (Math.random() * game.getGridWidth());
 				int y = (int) (Math.random() * game.getGridHeight());
