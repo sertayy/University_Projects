@@ -1,2 +1,2 @@
 # SchoolProjects
-My university projects so far
+My university projects.
