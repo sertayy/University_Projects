@@ -1,0 +1,2 @@
+# Tarjan’s Algorithm: 
+An implementation (in C++) of a directed graph with Tarjan's algorithm to find strongly connected components in order to find the minimum number of piggy banks(vertices) with keys(edges) inside to break to open all of piggy banks.In order to make the minimum number of passengers missing their flights, we were given three ideas to implement all possible combinations of them. This project was coded in C++ through an OOP perspective.
