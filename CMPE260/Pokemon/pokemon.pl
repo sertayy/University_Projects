@@ -15,7 +15,6 @@ PokemonLevel >= MinRequiredLevel -> find_pokemon_evolution(PokemonLevel, Evolved
 EvolvedPokemon=Pokemon.
 
 
-
 %Evolves the pokemons features according to its pokemon level 
 % pokemon level stats(+PokemonLevel, ?Pokemon, -PokemonHp, -PokemonAttack,-PokemonDefense)
 pokemon_level_stats(PokemonLevel, Pokemon, PokemonHp, PokemonAttack, PokemonDefense):-
@@ -23,12 +22,10 @@ pokemon_stats(Pokemon, Types, HealthPoint, Attack, Defense),
 PokemonHp is PokemonLevel*2+HealthPoint, PokemonAttack is PokemonLevel+Attack, PokemonDefense is PokemonLevel+Defense.
 
 
-
 %this is a helper predicate for iterating the defender types, and multipliers, used in single_type_multiplier
 recursive_lists([H | T],[Head | Tail], Multiplier, DefenderType, AttackerType):-
 (DefenderType = Head, Multiplier = H; 
 	recursive_lists(T,Tail,Multiplier,DefenderType, AttackerType)).
-
 
 
 %Finds the AttackerType, DefenderType or the Multiplier of these two
@@ -39,7 +36,6 @@ pokemon_types(List),
 recursive_lists(L, List, Multiplier, DefenderType, AttackerType).
 
 
-
 %used to find double-type advantage/disadvantage multiplier
 % type_multiplier(?AttackerType, +DefenderTypeList, ?Multiplier)
 type_multiplier(_, [] , 1.0).
@@ -47,7 +43,6 @@ type_multiplier(AttackerType, [H|T] , Multiplier):-
 single_type_multiplier(AttackerType, H, M1),
 type_multiplier(AttackerType, T, M2),
 Multiplier is M1*M2.
-
 
 
 %used to find type multiplier between two Pokemons or different attacker/defender Pokemon that achieves a given multiplier
@@ -64,7 +59,6 @@ type_multiplier(H,[H1|T1],M1),  (T = [T2|_] -> (type_multiplier(T2,[H1|T1],M2),
 Multiplier is max(M1,M2)); Multiplier is M1). 
 
 
-
 %pokemon attack(+AttackerPokemon, +AttackerPokemonLevel, +DefenderPokemon,+DefenderPokemonLevel, -Damage)
 pokemon_attack(AttackerPokemon, AttackerPokemonLevel, DefenderPokemon,DefenderPokemonLevel, Damage):-
 
@@ -72,7 +66,6 @@ pokemon_type_multiplier(AttackerPokemon,DefenderPokemon,Multiplier),
 pokemon_level_stats(AttackerPokemonLevel, AttackerPokemon, HealthAttack, Attack, Defense),
 pokemon_level_stats(DefenderPokemonLevel,DefenderPokemon,HealthDefend,AttackD,DefenseD),
 Damage is (0.5 * AttackerPokemonLevel*(Attack/DefenseD)*Multiplier)+1.
-
 
 
 %simulates a fight between two Pokemon then finds health points of each Pokemon at the end of the fight and the number of rounds.
@@ -105,7 +98,6 @@ Rounds is NRounds + 1);
 (Rounds is 1, Don1 = NPokemon1Hp, Don2 = NPokemon2Hp)).
 
 
-
 %simulates a tournament between two Pokemon trainers then finds the winner Pokemon trainer of each fight
 %pokemon tournament(+PokemonTrainer1, +PokemonTrainer2, -WinnerTrainerList)
 pokemon_tournament(PokemonTrainer1, PokemonTrainer2, WinnerTrainerList):-
@@ -133,7 +125,6 @@ pokemon_tournament_2(PokemonTrainer1, [Head1|Tail1], [HeadLevel1|TailLevel1], Po
 			pokemon_tournament_2(PokemonTrainer1, Tail1, TailLevel1, PokemonTrainer2, Tail2, TailLevel2, List))).
 
 
-
 %a shortcut to access all pokemons
 pokemon_members(List) :-
 	findall(Pokemon, pokemon_stats(Pokemon, _, _, _ ,_), List).
@@ -158,7 +149,6 @@ best_pokemon_2(EnemyPokemon, LevelCap,[HeadPokemon|TailPokemon], RemainHP, BestP
 		best_pokemon_2(EnemyPokemon, LevelCap, TailPokemon, HeadPokemonHP, HeadPokemon, BestPokemon, RemainingHp)).
 
 
-
 %best pokemon team(+OpponentTrainer, -PokemonTeam)
 best_pokemon_team(OpponentTrainer, PokemonTeam):-
 
@@ -178,7 +168,6 @@ best_pokemon_team(OpponentTrainer, PokemonTeam):-
 best_pokemon_team_2([], [], []).
 
 
-
 %finds the best Pokemon Team against the given OpponentTrainer where the levels of each Pokemon of our best Pokemon
 %pokemon types(+TypeList, +InitialPokemonList, -PokemonList)
 pokemon_types(TypeList, InitialPokemonList, PokemonList):-
@@ -189,7 +178,6 @@ pokemon_types_2([H|TypeListTail], Pokemon):-
 
 pokemon_stats(Pokemon, PokemonTypeList, _, _, _),
 ((member(H, PokemonTypeList),!); pokemon_types_2(TypeListTail, Pokemon)).
-
 
 
 %generates a Pokemon team based on liked and disliked types and some criteria
