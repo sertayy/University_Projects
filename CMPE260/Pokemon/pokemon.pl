@@ -246,9 +246,3 @@ getH([HPokemon|TPokemon], [HealthH|HealthT]):-
 pokemon_stats(HPokemon, _, HP, _, _),
 HealthH = [HP,HPokemon],
 getH(TPokemon, HealthT).
-
-
-
-
-
-
