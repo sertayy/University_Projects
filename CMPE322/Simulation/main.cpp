@@ -19,7 +19,6 @@ int telecom;
 int water;
 int max_sleep;  //maximum sleep time among the customers
 pthread_mutex_t atm_ = PTHREAD_MUTEX_INITIALIZER;   //mutex for atm
-pthread_mutex_t cust = PTHREAD_MUTEX_INITIALIZER;   //mutex for customer
 pthread_mutex_t g = PTHREAD_MUTEX_INITIALIZER; //mutex for gas
 pthread_mutex_t cable = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t elec = PTHREAD_MUTEX_INITIALIZER;
