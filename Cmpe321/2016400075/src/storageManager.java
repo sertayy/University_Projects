@@ -184,14 +184,6 @@ public class storageManager {
         }
     }
 
-    public static int readRecords(String fileName, int position) throws IOException{
-        RandomAccessFile file = new RandomAccessFile(fileName, "r");
-        file.seek(position);
-        int fieldValue = file.readInt();
-        file.close();
-        return fieldValue;
-    }
-
     public static void createRecord(String typeName, int[] recordFields) throws IOException{
         String fileName = typeName+".txt";
         int record_position;
@@ -229,6 +221,15 @@ public class storageManager {
             }
         }
     }
+
+    public static int readRecords(String fileName, int position) throws IOException{
+        RandomAccessFile file = new RandomAccessFile(fileName, "r");
+        file.seek(position);
+        int fieldValue = file.readInt();
+        file.close();
+        return fieldValue;
+    }
+
 
     public static void writeRecord(String fileName, int position, int[] recordFields)throws IOException{
         RandomAccessFile file = new RandomAccessFile(fileName, "rw");
