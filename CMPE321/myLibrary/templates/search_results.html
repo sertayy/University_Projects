@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Result</h1>
+<hr>
+<table class="table table-striped">
+    <tr>
+        <th>isbn</th>
+        <th>title</th>
+        <th>author</th>
+        <th></th>
+    </tr>
+    {% for book in books %}
+    <tr>
+        <td>{{book.isbn}}</td>
+        <td>{{book.title}}</td>
+        <td>{{book.author}}</td>
+        <td>
+            <form action="{{url_for('delete_book', isbn=book.isbn)}}" method="post">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="submit" value="Delete" class="btn btn-danger pull-right">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</ul>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1>Books</h1>
+{% from "includes/_formhelpers.html" import render_field %}
+<form method="POST" action="" >
+    <div class="form-group">
+        {{ render_field(form.select) }}
+        <p>
+            {{ form.keyword }}
+        </p>
+    </div>
+    <p>
+        <input type="submit" class="btn btn-primary" value="Search">
+    </p>
+</form>
+<a class="btn btn-success" href="/add_book"> Add Book</a>
+<a class="btn btn-success" href="/borrow_book"> Borrow Book</a>
+<hr>
+<table class="table table-striped">
+    <tr>
+        <th>isbn</th>
+        <th>title</th>
+        <th>author</th>
+        <th></th>
+    </tr>
+    {% for book in books %}
+    <tr>
+        <td>{{book.isbn}}</td>
+        <td>{{book.title}}</td>
+        <td>{{book.author}}</td>
+        <td>
+            <form action="{{url_for('delete_book', isbn=book.isbn)}}" method="post">
+                <input type="hidden" name="_method" value="DELETE">
+                <input type="submit" value="Delete" class="btn btn-danger pull-right">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</ul>
+{% endblock %}
