@@ -136,6 +136,10 @@ def borrow_book():
     if request.method == 'POST' and form.validate():
         isbn = form.isbn.data
         tc = form.tc.data
+        if len(str(tc)) != 11:
+            flash('TC number is not valid.', 'danger')
+            return redirect(url_for('borrow_book'))
+
         due_date = date.today() + timedelta(days=14)
 
         # Create Cursor
