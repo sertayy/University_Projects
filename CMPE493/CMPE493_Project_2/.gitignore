@@ -1,0 +1,4 @@
+venv
+.idea
+reuters21578
+__pycache__
