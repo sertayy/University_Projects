@@ -9,10 +9,10 @@ from trie import Trie
 
 
 def extract_files():  # extracts the words in stopwords.txt and the necessary information from the Reuters articles
+
     files_dir_path: str = os.path.join(os.path.dirname(__file__), "reuters21578")
-    id_list: List[str] = []
     article_list: List[str] = []
-    in_file = None
+
     with open("stop_words.txt", "r") as stop_word_file:
         stop_words = stop_word_file.read().splitlines()
 
@@ -23,8 +23,8 @@ def extract_files():  # extracts the words in stopwords.txt and the necessary in
             else:
                 file_name = "reut2-0{0}.sgm".format(i)
 
-            in_file = open(os.path.join(files_dir_path, file_name), "rb")
-            file_data: str = in_file.read().decode("latin-1")
+            with open(os.path.join(files_dir_path, file_name), "rb") as in_file:
+                file_data: str = in_file.read().decode("latin-1")
 
             # splits the file to the texts
             text_list = [pt.split('</REUTERS>')[0] for pt in file_data.strip().split('<REUTERS')][1:]
@@ -38,9 +38,6 @@ def extract_files():  # extracts the words in stopwords.txt and the necessary in
                 article_list.append(article)  # ID list is not necessary since we will use article_list's index + 1
         except Exception as ex:
             logging.error("An error occured while reading the sgm file. {0}".format(ex))
-        finally:
-            if in_file:
-                in_file.close()
     return article_list, stop_words
 
 
