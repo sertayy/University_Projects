@@ -3,6 +3,7 @@ In this project I implemented a document retrieval system for single word querie
 # Notes
 - This project developed in a Windows 8 machine using Python 3.8.
 - All the libraries used in this projects are python standard libraries, that's why there is no need for requirements.txt.
+- The stop_word.txt file and reuters21578 folder should be located in the same directory as prep.py file.
 # How It Works?
 - The output will be printed on the console each time you typed an input. 
 - If the input query found, the sorted IDs of the matching documents will be printed on the console with an ascending order.

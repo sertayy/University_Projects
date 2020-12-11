@@ -1,4 +1,3 @@
-import re
 from typing import List, Dict
 import os
 import logging
@@ -41,7 +40,7 @@ def extract_files():  # extracts the words in stopwords.txt and the necessary in
     return article_list, stop_words
 
 
-# returns all of the total distinct tokens and the list of token-list of each article
+# returns all of the total distinct tokens and the list of token-list of each article, in otw data-preprocessing
 def get_tokens(article_list: List[str], stop_words: List[str]) -> (List[List[str]], List[str]):
     special_chars = string.punctuation
     tokens_with_indexes: List[List[str]] = []
