@@ -132,7 +132,7 @@ public class storageManager {
         while (temp_position <= last_position) {
             if(temp_position != last_position){
                 int nextPosition = temp_position + numOfFields*4;
-                int[] fieldValues = readFromPage(nextPosition, numOfFields, fileName);
+                int[] fieldValues = readFieldValsFromPage(nextPosition, numOfFields, fileName);
                 writeRecord(fileName , temp_position, fieldValues);
                 temp_position = nextPosition;
             }else{
@@ -146,7 +146,7 @@ public class storageManager {
         }
     }
 
-    public static int[] readFromPage(int position, int numOfFields, String fileName) throws IOException{
+    public static int[] readFieldValsFromPage(int position, int numOfFields, String fileName) throws IOException{
         int[] fieldValues = new int[numOfFields];
         RandomAccessFile file = new RandomAccessFile(fileName, "r");
         file.seek(position);

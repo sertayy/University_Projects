@@ -26,8 +26,6 @@ def books():
     if request.method == 'POST':
         choice = search.select.data
         keyword = search.keyword.data
-        print("choice is:", choice)
-        print("keyword is:", keyword)
         return redirect(url_for('search_results', choice=choice, keyword=keyword))
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM BOOKS")
