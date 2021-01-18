@@ -1,27 +1,40 @@
 import math
 import pickle
-from urllib.request import urlopen
 import re
-from typing import List, Dict, Tuple
 import logging
 import string
 import time
 import collections
 import os
 import sys
+from urllib.request import urlopen
+from typing import List, Dict, Tuple
 from multiprocessing.pool import ThreadPool
 
 
 def stop_word_list() -> List[str]:
+    """
+    Creates the stop-word list.
+    :return: stop word list
+    """
     with open("input/stop_words.txt", "r") as stop_word_file:
         return stop_word_file.read().splitlines()
 
 
 PUNCTUATIONS: List[str] = list(string.punctuation + "—…’")
 STOP_WORDS: List[str] = stop_word_list()
+ALPHA = 0.75
 
 
-def extract_data_from_url(url: str, is_query: bool = False) -> (str, str, List[str], List[str], List[str], List[str]):
+def extract_data_from_url(url: str, is_query: bool = False, in_dict: bool = False) -> (
+        str, str, List[str], List[str], List[str], List[str]):
+    """
+    Extracts the necessary parts of the book.
+    :param url: good reads url of the book
+    :param is_query: True if the parameter url is the input. Default value is False.
+    :param in_dict: True if the parameter url is the input and is in system book dictionary. Default value is False.
+    :return: unique part of the link, book title, authors, tokens, recommended book urls, genres
+    """
     is_valid: bool = True
     is_desc_valid: bool = True
     with urlopen(url) as data:
@@ -43,7 +56,6 @@ def extract_data_from_url(url: str, is_query: bool = False) -> (str, str, List[s
         if not unique_link.endswith("\n"):
             unique_link += "\n"
 
-        # TODO Illustrator?
         author_list: List[str] = re.findall("<span itemprop=\"name\">(.*?)</span>", info, re.DOTALL)
         description = re.findall("<span id=\"freeText(.*?)</span>",
                                  re.findall("<div id=\"descriptionContainer\">(.*?)</div>\n</div>", info, re.DOTALL)[0],
@@ -90,7 +102,9 @@ def extract_data_from_url(url: str, is_query: bool = False) -> (str, str, List[s
                 book_content.write("--Genres--\n".encode("utf-8"))
                 for genre in genres:
                     book_content.write((genre + "\n").encode("utf-8"))
-                    
+            if in_dict:
+                return
+
         if is_valid:
             try:
                 tokens: List[str] = []
@@ -103,6 +117,11 @@ def extract_data_from_url(url: str, is_query: bool = False) -> (str, str, List[s
 
 
 def tokenize(description: str) -> List[str]:
+    """
+    Splits description to tokens.
+    :param description: description text of the book
+    :return: list of tokens
+    """
     tokens: List[str] = []
     description = description.lower()
 
@@ -125,7 +144,10 @@ def tokenize(description: str) -> List[str]:
 
 
 def create_dict() -> Dict[str, Dict[str, List[str] or str]]:
-    """Creates the book dictionary."""
+    """
+    Creates a dictionary which keeps necessary info of the books.
+    :return: book dictionary: {unique_part: {book_title:'', authors:[], tokens:[], recommended_urls[], genres:[]}}
+    """
     book_dict: Dict[str, Dict[str, List[str] or str]] = {}
     with open("input/books.txt", "r") as file:
         urls = file.readlines()
@@ -140,6 +162,11 @@ def create_dict() -> Dict[str, Dict[str, List[str] or str]]:
 
 
 def calculate_tf_weight(tokens: List[str]) -> Dict[str, float]:
+    """
+    Calculates the TF Weight score of each token and genre.
+    :param tokens: list of tokens or genres
+    :return: a dictionary represented as {token or genre: tf_weight_score}
+    """
     score_dict: Dict[str, float] = {}
     doc_freq: Dict[str, int] = dict(collections.Counter(tokens))
     for token in tokens:
@@ -148,6 +175,11 @@ def calculate_tf_weight(tokens: List[str]) -> Dict[str, float]:
 
 
 def calculate_df(book_dict) -> (Dict[str, int], Dict[str, int]):
+    """
+    Calculates the document frequency of each token and genre.
+    :param book_dict: {unique_part: {book_title:'', authors:[], tokens:[], recommended_urls[], genres:[]}}
+    :return: Tuple of dictionaries represented as ({token: df_score}{genre: df_score})
+    """
     token_df_dict: Dict[str, int] = {}  # {token: doc. freq.}
     genre_df_dict: Dict[str, int] = {}
     for unique_link in book_dict:
@@ -167,6 +199,12 @@ def calculate_df(book_dict) -> (Dict[str, int], Dict[str, int]):
 
 
 def calculate_idf(df_dict: Dict[str, int], num_of_books: int) -> Dict[str, float]:
+    """
+    Calculates the document frequency of tokens and genres.
+    :param df_dict: a dictionary which keeps the df score tokens or genres {token or genre: df_score}
+    :param num_of_books: number of books in the system
+    :return: a dictionary which keeps the idf score tokens or genres {token or genre: idf_score}
+    """
     idf_dict: Dict[str, float] = {}
     for token in df_dict:
         idf_dict[token] = math.log(num_of_books / df_dict[token])
@@ -175,27 +213,42 @@ def calculate_idf(df_dict: Dict[str, int], num_of_books: int) -> Dict[str, float
 
 def genre_calculate_score(tf_dict: Dict[str, Dict[str, float]], idf_dict: Dict[str, float]) \
         -> Dict[str, Dict[str, float]]:
-    for book_title in tf_dict:
-        for token in tf_dict[book_title]:
-            idf_value: float = idf_dict[token]
-            tf_value: float = tf_dict[book_title][token]
-            tf_dict[book_title][token] = idf_value * tf_value
-            # tf_dict now keeps the score of the token instead of tf value
+    """
+    Calculates the score of the genres by doing idf * tf operation.
+    :param tf_dict: a dictionary represented as {unique_part: {genre: tf_weight_score}}
+    :param idf_dict: a dictionary represented as {genre: idf_score}
+    :return: a dictionary represented as {unique_part: {genre: score}}, score = tf * idf
+    """
+    for unique_part in tf_dict:
+        for genre in tf_dict[unique_part]:
+            idf_value: float = idf_dict[genre]
+            tf_value: float = tf_dict[unique_part][genre]
+            tf_dict[unique_part][genre] = idf_value * tf_value
     return tf_dict
 
 
 def calculate_score(tf_dict: Dict[str, Tuple[Dict[str, float], str]], idf_dict: Dict[str, float]) \
         -> Dict[str, Tuple[Dict[str, float], str]]:
+    """
+    Calculates the score of the tokens by doing idf * tf operation.
+    :param tf_dict: a dictionary represented as {unique_part: ({token: tf_weight_score}, book_title)}
+    :param idf_dict: a dictionary represented as {token: idf_score}
+    :return: a dictionary represented as {unique_part: ({token: score}, book_title)}, score = tf * idf
+    """
     for unique_link in tf_dict:
         for token in tf_dict[unique_link][0]:
             idf_value: float = idf_dict[token]
             tf_value: float = tf_dict[unique_link][0][token]
             tf_dict[unique_link][0][token] = idf_value * tf_value
-            # tf_dict now keeps the score of the token instead of tf value
     return tf_dict
 
 
 def genre_calculate_normalization(score_dict: Dict[str, Dict[str, float]]) -> Dict[str, Dict[str, float]]:
+    """
+    Calculates the normalization scores of tf * idf scores for the genres.
+    :param score_dict: a dictionary represented as {unique_part: {genre: score}}, score = tf * idf
+    :return: a dictionary represented as {unique_part: {genre: normalized_score}}
+    """
     total: float = 0
     for book_title in score_dict:
         for token in score_dict[book_title]:
@@ -212,6 +265,11 @@ def genre_calculate_normalization(score_dict: Dict[str, Dict[str, float]]) -> Di
 
 def calculate_normalization(score_dict: Dict[str, Tuple[Dict[str, float], str]]) \
         -> Dict[str, Tuple[Dict[str, float], str]]:
+    """
+    Calculates the normalization scores of tf * idf scores for the tokens.
+    :param score_dict: a dictionary represented as {unique_part: ({token: score}, book_title)}, score = tf * idf
+    :return: a dictionary represented as {unique_part: ({token: normalized_ score}, book_title)}
+    """
     total: float = 0
     for unique_link in score_dict:
         for token in score_dict[unique_link][0]:
@@ -226,7 +284,13 @@ def calculate_normalization(score_dict: Dict[str, Tuple[Dict[str, float], str]])
     return score_dict
 
 
-def cosine_simularity(query_scores: Dict[str, float], book_score: Dict[str, float]) -> float:
+def cosine_similarity(query_scores: Dict[str, float], book_score: Dict[str, float]) -> float:
+    """
+    Calculates the cosine similarity between the input book and a book already in the system.
+    (both for genres and tokens)
+    :param query_scores: a dictionary for the input book represented as {token or genre: normalized_score}
+    :param book_score: a dictionary represented as {token or genre: normalized_score}
+    """
     val: float = 0
     for token in query_scores:
         if token in book_score:
@@ -234,30 +298,67 @@ def cosine_simularity(query_scores: Dict[str, float], book_score: Dict[str, floa
     return val
 
 
-def calculate_simularity(query_link: str, book_dict: Dict[str, Dict[str, List[str] or str]],
+def calculate_similarity(query_link: str, book_dict: Dict[str, Dict[str, List[str] or str]],
                          normalized_dict: Dict[str, Tuple[Dict[str, float], str]],
                          genre_normalized_dict: Dict[str, Dict[str, float]]) \
         -> (Dict[str, list], Dict[str, Tuple[str, List[str]]]):
+    """
+    Calculates the similarity score between the input query and system books.
+    :param query_link: unique part of the input query url
+    :param book_dict: a dictionary represented as {unique_part: {book_title:'', authors:[], tokens:[], recommended_urls[], genres:[]}}
+    :param normalized_dict: a dictionary represented as {unique_part: ({token: normalized_score}, book_title)}
+    :param genre_normalized_dict: a dictionary represented as {unique_part: {token: normalized_score}}
+    """
     value_results: Dict[str, float] = {}
     title_authors: Dict[str, Tuple[str, List[str]]] = {}
-    alfa: float = 0.75
     for unique_link in book_dict:
         if unique_link != query_link:
-            desc_sim: float = cosine_simularity(normalized_dict[query_link][0], normalized_dict[unique_link][0])
-            genre_sim: float = cosine_simularity(genre_normalized_dict[query_link],
+            desc_sim: float = cosine_similarity(normalized_dict[query_link][0], normalized_dict[unique_link][0])
+            genre_sim: float = cosine_similarity(genre_normalized_dict[query_link],
                                                  genre_normalized_dict[unique_link])
-            sim_value: float = alfa * desc_sim + (1 - alfa) * genre_sim
+            sim_value: float = ALPHA * desc_sim + (1 - ALPHA) * genre_sim
             value_results[unique_link] = sim_value
             title_authors[unique_link] = (book_dict[unique_link]["title"], book_dict[unique_link]["authors"])
     return value_results, title_authors
 
 
-def recommend_books(results: Dict[str, float], title_authors: Dict[str, Tuple[str, List[str]]]):
-    recommendations: List[str] = sorted(results, key=results.get, reverse=True)[:18]
-    print("Readers also enjoyed:")
+def recommend_books(recommendations: List[str], title_authors: Dict[str, Tuple[str, List[str]]]):
+    """
+    Prints the recommended books in a title-author pair format.
+    :param recommendations: list of unique_parts of the urls recommended by the system
+    :param title_authors: a dictionary represented as {unique_part: (book_title, author_list)}
+    """
+    print("Recommended book title vs. author pairs are:")
     for unique_link in recommendations:
         pair: Tuple[str, List[str]] = title_authors[unique_link]
         print("{0} --- {1}".format(pair[0], str(pair[1])[1:-1]))
+
+
+def calculate_precision(query_recom_urls: List[str], recommendations: List[str]):
+    """
+    Calculates the average precision and precision scores and prints these to the console.
+    :param query_recom_urls: list of recommended urls of the input query
+    :param recommendations: list of unique_parts of the urls recommended by the system
+    """
+    precision: float = 0
+    matches: int = 0
+    len_recommendations: int = len(recommendations)
+    len_query_recom_urls: int = len(query_recom_urls)
+    if len_recommendations < len_query_recom_urls:
+        logging.error(
+            "Total number of recommend urls of the query are bigger than 18. --> ({0})".format(len_query_recom_urls))
+    num_of_urls = min(len_recommendations, len_query_recom_urls)
+
+    for i in range(num_of_urls):
+        url = query_recom_urls[i]
+        unique_link = url[url.rfind("/") + 1:] + "\n"
+        if unique_link == recommendations[i]:
+            matches += 1
+            precision += matches / (i + 1)
+    avg_precision: float = precision / matches
+    precision: float = matches / num_of_urls
+    print("AVG PRECISION: {0}".format(avg_precision))
+    print("PRECISION: {0}".format(precision))
 
 
 if __name__ == '__main__':
@@ -273,10 +374,10 @@ if __name__ == '__main__':
             pickle.dump(book_dict, book_dict_file)
     print("Book dictionary created. Time passed: {0}".format(after_create_dict - before_create_dict))
 
-    query_url: str = sys.argv[1]
+    query_url: str = sys.argv[1]  # Takes the input
     unique_part = query_url[query_url.rfind("/") + 1:] + "\n"
-    fetched_data = extract_data_from_url(query_url, True)
     if unique_part not in book_dict:
+        fetched_data = extract_data_from_url(query_url, True)
         print("Query url: {0} is not in the dictionary".format(query_url))
         book_dict[fetched_data[0]] = {"title": fetched_data[1]}
         book_dict[fetched_data[0]]["authors"] = fetched_data[2]
@@ -285,18 +386,16 @@ if __name__ == '__main__':
         book_dict[fetched_data[0]]["genres"] = fetched_data[5]
         print("Query url: {0} is added to the dictionary.".format(query_url))
     else:
+        extract_data_from_url(query_url, True, True)
         print("Query url: {0} is found in the dictionary!".format(query_url))
-
-
+    recommended_urls: List[str] = book_dict[unique_part]["recommendations"]
 
     genre_tf_dict: Dict[str, Dict[str, float]] = {}
     tf_dict: Dict[str, Tuple[Dict[str, float], str]] = {}
     for unique_link in book_dict:
         genre_tf_dict[unique_link] = calculate_tf_weight(book_dict[unique_link]["genres"])
         tf_dict[unique_link] = (calculate_tf_weight(book_dict[unique_link]["tokens"]), book_dict[unique_link]["title"])
-        # {unique_linnk: ({token: tf}, title)} Dict[str, Tuple[Dict[str, float], str]
 
-    # book_vs_tokens = {dict.fromkeys(book_dict): book_dict["tokens"]} df için böyle bir şey oluşturabilirsin
     df_dict, genre_df_dict = calculate_df(book_dict)
 
     idf_dict: Dict[str, float] = calculate_idf(df_dict, len(book_dict))
@@ -309,9 +408,14 @@ if __name__ == '__main__':
     genre_normalized_dict: Dict[str, Dict[str, float]] = genre_calculate_normalization(genre_score_dict)
 
     try:
-        value_results, title_authors = calculate_simularity(unique_part, book_dict, normalized_dict,
+        value_results, title_authors = calculate_similarity(unique_part, book_dict, normalized_dict,
                                                             genre_normalized_dict)
-        recommend_books(value_results, title_authors)
+        recommendations: List[str] = sorted(value_results, key=value_results.get, reverse=True)[:18]
+        recommend_books(recommendations, title_authors)
+        try:
+            calculate_precision(recommended_urls, recommendations)
+        except ZeroDivisionError as ex:
+            logging.error("No matches founded for the value of alpha {0}".format(ALPHA))
     except Exception as ex:
-        logging.error(
-"Error happened while calculating the simularity results of query url: {0}{1}".format(query_url, ex))
+        logging.error("Error happened while calculating the similarity results of query url: {0}{1}".format(query_url,
+                                                                                                            ex))
