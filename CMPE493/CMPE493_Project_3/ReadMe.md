@@ -24,7 +24,6 @@ To run the system successfully, execute the commands mentioned bellowed inside t
      ```
      (INFO) Model will be created...
      (INFO) Model saved in the output folder.
-
 2.   ```
      python main.py "book_url"
      ```
