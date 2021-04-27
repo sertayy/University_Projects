@@ -1,0 +1,5 @@
+move 1 left
+move 7 down
+move 3 down
+nInsertedNodes: 1276
+cost: 11

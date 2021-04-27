@@ -1,0 +1,10 @@
+move 15 right
+move 14 right
+move 13 right
+move 9 down
+move 10 left
+move 6 down
+move 7 left
+move 8 left
+nInsertedNodes: 3028
+cost: 82
