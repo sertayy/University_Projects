@@ -1,0 +1,5 @@
+AGENT1 move 5 left
+AGENT2 move 4 left
+AGENT3 move 4 right
+Value: 0.07
+Util calls: 470

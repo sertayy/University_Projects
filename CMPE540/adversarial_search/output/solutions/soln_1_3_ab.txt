@@ -1,0 +1,11 @@
+AGENT1 move 1 right
+AGENT2 move 2 up
+AGENT3 move 3 left
+AGENT1 move 5 left
+AGENT2 move 2 down
+AGENT3 move 4 down
+AGENT1 move 1 right
+AGENT2 move 2 up
+AGENT3 move 2 right
+Value: 9.00
+Util calls: 1314551
