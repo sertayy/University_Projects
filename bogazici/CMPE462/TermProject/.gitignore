@@ -1,0 +1,5 @@
+venv
+step2/TRAIN
+step2/VAL
+.idea
+__pycache__
