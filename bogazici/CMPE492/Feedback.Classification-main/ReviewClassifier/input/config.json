@@ -1,0 +1,11 @@
+{
+  "is_file": true,
+  "db_connection": false,
+  "file_path": "/Users/sertay.akpinar/Documents/GitHub/Feedback.Classification/ReviewClassifier/input/data.json",
+  "use_existing_model": true,
+  "db_type": "bigQuery",
+  "key_path": "/Users/sertay.akpinar/Desktop/feedbackclassification-3f1c06ba580d.json",
+  "project_id": "feedbackclassification",
+  "schema_name": "reviews",
+  "table_name": "new_classification"
+}

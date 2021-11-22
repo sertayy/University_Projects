@@ -1,0 +1,8 @@
+src/main/resources/key.p12
+src/main/java/constants
+reviews.txt
+.idea/
+.gradle
+build/
+*.iml
+.DS_Store
