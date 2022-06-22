@@ -10,7 +10,7 @@ Jinja2==2.11.3
 linecache2==1.0.0
 Manager==2.0.3
 MarkupSafe==1.1.1
-numpy==1.20.0
+numpy==1.22.0
 ordereddict==1.1
 packaging==20.9
 pygame==2.0.1
