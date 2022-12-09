@@ -1,4 +1,4 @@
-certifi==2021.5.30
+certifi==2022.12.7
 cycler==0.10.0
 kiwisolver @ file:///opt/concourse/worker/volumes/live/f396cc75-ab93-4292-5463-c41bf6c4bd1a/volume/kiwisolver_1612282405830/work
 libsvm==3.23.0.4
